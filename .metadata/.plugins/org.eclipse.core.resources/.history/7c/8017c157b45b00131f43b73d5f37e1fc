@@ -1,0 +1,43 @@
+/* 
+* @Author: Zachary Priddy
+* @Date:   2013-11-25 16:36:27
+* @Last Modified by:   Zachary Priddy
+* @Last Modified time: 2013-11-25 16:36:27
+*/
+
+void oct_nunchuk_init(i2c_mod_1)
+{
+	
+}
+void pit_init(pit_timer_0, pit_freq_1_hz, console_update)
+{
+	
+}
+int oct_nunchuk_pos_x()
+{
+	return -1;
+}
+int oct_nunchuk_pos_y()
+{
+	return -1;
+}
+int oct_nunchuk_accel_x()
+{
+	return -1;
+}
+int oct_nunchuk_accel_y()
+{
+	return -1;
+}
+int oct_nunchuk_accel_z()
+{
+	return -1;
+}
+int oct_nunchuk_button_c()
+{
+	return -1;
+}
+int oct_nunchuk_button_z()
+{
+	return -1;
+}

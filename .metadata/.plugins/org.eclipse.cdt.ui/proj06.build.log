@@ -1,0 +1,5 @@
+
+**** Build of configuration TWR-MCF5225X_Console_Internal_RAM for project proj06 ****
+
+C:\Freescale\CW MCU v10.2\gnu\bin\mingw32-make -j8 all 
+mingw32-make: Nothing to be done for `all'.

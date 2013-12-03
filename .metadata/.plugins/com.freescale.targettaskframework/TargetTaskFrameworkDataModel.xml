@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TargetTaskFramework>
+<Element Type="TaskGroup">
+<TaskGroup GroupName="Root" NumberOfElements="1">
+<Element Type="TaskGroup">
+<TaskGroup GroupName="AutoFlash" NumberOfElements="1">
+<Element Type="TargetTask">
+<TargetTask TaskStoringFile="C:\CSE325_workspaces\CSE325-Project-6\PROJECT6\Project_Settings\Debugger\CopyOfCopyOfTWR-MCF5225X_INTFLASH.ttf"/>
+</Element>
+</TaskGroup>
+</Element>
+</TaskGroup>
+</Element>
+<RunConfiguration ContextName="Active Debug Context" ExecutionContextType="ActiveDebugContext"/>
+<Provider ProviderName="Flash Programmer for Kinetis"/>
+<Provider ProviderName="Flash Programmer for ColdFire V234"/>
+<Provider ProviderName="Flash Programmer for DSC"/>
+<Provider ProviderName="Flash Programmer for Power Architecture"/>
+<Provider ProviderName="Flash Programmer for HCS08/RS08/ColdFire V1"/>
+<Provider ProviderName="Flash Programmer for S12Z"/>
+<Provider ProviderName="Hardware Diagnostic"/>
+<Provider ProviderName="Import/Export/Fill Memory"/>
+</TargetTaskFramework>

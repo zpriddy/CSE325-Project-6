@@ -1,0 +1,11 @@
+/*
+ * main implementation: use this sample to create your own application
+ *
+ */
+
+
+
+int main(void)
+{
+	printf("Hello World in C++ from MCF52259 derivative on TWR-MCF5225X board\n\r");
+}

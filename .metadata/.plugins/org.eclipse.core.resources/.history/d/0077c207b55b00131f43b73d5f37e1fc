@@ -1,0 +1,26 @@
+/******************************************************************************
+* oct_nunchuk.h
+* 
+* Date:   2013-11-25 16:36:33
+*
+* Zachary Priddy
+* zpriddy@asu.edu
+* www.zpriddy.com
+*
+* DESCRIPTION:
+*
+*
+******************************************************************************/
+#ifndef OCT_NUNCHUK_H
+#define OCT_NUNCHUK_H
+
+//void oct_nunchuk_init(i2c_mod_1);
+int oct_nunchuk_pos_x();
+int oct_nunchuk_pos_y();
+int oct_nunchuk_accel_x();
+int oct_nunchuk_accel_y();
+int oct_nunchuk_accel_z();
+int oct_nunchuk_button_c();
+int oct_nunchuk_button_z();
+ 
+#endif OCT_NUNCHUK_H
