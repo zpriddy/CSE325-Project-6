@@ -36,7 +36,7 @@ extern unsigned long far __DATA_RAM, __DATA_ROM, __DATA_END;
 
 extern void __call_static_initializers(void);
 extern int main(int, char **);
-
+extern void exit(int);
 
 	/* exported routines */
 
@@ -300,6 +300,7 @@ __skip_rom_copy__:
 	
 	/* now call exit(0) to terminate the application */
 	clr.l		  -(sp)
+	jsr			  exit
 	addq.l		#4, sp
 
 	/* should never reach here but just in case */
