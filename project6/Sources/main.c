@@ -24,6 +24,9 @@
 #include "oct_nunchuk.h"
 #include "utils.h"
 
+
+int pos_x, pos_y, acc_x, acc_y, acc_z, b_c, b_z;
+
 static volatile int g_console_update;
 
 
@@ -47,9 +50,16 @@ static void pb2_callback()
 	
 }
 
-static void pit0_callback()
+static void pit0_callback(int r1, int r2, int r3, int r4, int r5, int c, int z)
 {
-	g_console_update = 1;
+	pos_x = r1;
+	pos_y = r2; 
+	acc_x = r3; 
+	acc_y = r4; 
+	acc_z = r5;
+	b_c = c;
+	b_z = z;
+	//g_console_update = 1;
 	 
 }
 
@@ -70,9 +80,10 @@ static void hw_init()
 	
 	
 	
+	
 	int_uninhibit_all();
 	g_console_update = 1;
-	
+	nunchuk_set_input_callback(pit0_callback);
 	
 	
 	pit0_enable();
@@ -95,12 +106,16 @@ static void run()
 {
 	while(1)
 	{
-		nunchuk_read();
-		if(g_console_update == 1)
-		{
-			printf("TEST OUTPUT\n");
-			g_console_update = 0;
-		}
+		printf("%d %d %d %d %d %d %d\n",
+				pos_x,
+				pos_y,
+				acc_x,
+				acc_y,
+				acc_z,
+				b_c,
+				b_z
+	);
+		g_console_update = 1;
 		
 		
 	}

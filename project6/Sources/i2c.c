@@ -12,135 +12,185 @@
 #include "support_common.h"
 #include "utils.h"
 
-// reset the registers for i2c
-void i2c_reset()
-{
-	MCF_I2C0_I2CR |= MCF_I2C_I2CR_IEN; 		// Set IEN to enable the I2C module.
-	MCF_I2C0_I2CR &= ~MCF_I2C_I2CR_IIEN; 	// Clear IIEN to disable I2C interrupts. We're going to use polling to determine when transfers complete.
-	MCF_I2C0_I2CR &= ~MCF_I2C_I2CR_MSTA;		// Clear MSTA to make the MCF52259 a slave.
-	MCF_I2C0_I2CR &= ~MCF_I2C_I2CR_MTX; 		// Clear MTX to make the MCF52259 a receiver. Now we're in slave-receiver mode.
-	MCF_I2C0_I2CR &= ~MCF_I2C_I2CR_TXAK;		// Clear TXAK so received data/address bytes will be automatically ACKed.
-	MCF_I2C0_I2CR &= ~MCF_I2C_I2CR_RSTA;		// Clear RSTA so Repeated Start bits will not be generated.
+void i2c_init() {
+        // Initialize DMA timer for use in transfer delays
+        dtim0_init();
+        
+        // Configure GPIO port AS for SCL and SDA
+        MCF_GPIO_PUBPAR |= MCF_GPIO_PUBPAR_UTXD1_SCL1;
+        MCF_GPIO_PUBPAR |= MCF_GPIO_PUBPAR_URXD1_SDA1;
+        
+        // Do we need data direction as output?
+        /*MCF_GPIO_DDRAS |= MCF_GPIO_DDRAS_DDRAS0;
+        MCF_GPIO_DDRAS |= MCF_GPIO_DDRAS_DDRAS1;*/
+        
+        // Write the I2C board address
+        MCF_I2C1_I2ADR |= MCF_I2C_I2ADR_ADR(I2C_ADDR);
+        
+        // Write the i2c clock rate. f_i2c = 80Mhz / divider
+        // divider = 80Mhz / 0.1 Mhz = 800. Closest divider in Table 29.2 896 for 89.29Khz, IC = 0x3A
+        MCF_I2C1_I2FDR |= MCF_I2C_I2FDR_IC(0x3A);
+        
+        // Reset to slave-receiver mode
+        i2c_reset();
+        
+        // If the bus is busy b/c a slave is transmitting, generate a stop bit when switching
+        // from master-recviver back to slave-receiver
+        if(MCF_I2C1_I2SR & MCF_I2C_I2SR_IBB) {
+                MCF_I2C1_I2CR = 0x00; // Board is slave-receiver, i2c disabled, interrupts disabled
+                MCF_I2C1_I2CR = 0xA0; // Board is master-receiver, i2c enabled, interrupts, disabled
+                uint8 dummy = MCF_I2C0_I2DR; // Dummy read from slave which is transmitting
+                MCF_I2C1_I2SR = 0x00; // Clear arbitration lost flag, clear i2c interrupt request flag
+                MCF_I2C1_I2CR = 0x00; // Board is slave-receiver, i2c disabled, interrupts disabled
+                MCF_I2C1_I2CR = 0x80; // Enable I2C module
+        }
 }
 
-// initialize the i2c registers
-void i2c_init()
-{
-	int dummy;
-	MCF_GPIO_PASPAR |= MCF_GPIO_PASPAR_SCL0_SCL0;		// set pin 0 to the primary (I2C) function
-	MCF_GPIO_PASPAR |= MCF_GPIO_PASPAR_SDA0_SDA0;		// set pin 1 to the primary (I2C) function
-	
-	MCF_I2C0_I2ADR |= 0x08 << 1;
-	MCF_I2C0_I2FDR |= 0x3A; // IC = 896 //89.29KHz
-	
-	// call i2c reset
-	i2c_reset();
-	
-	if(getBit(MCF_I2C0_I2SR, 5) == 1)
-	{
-		MCF_I2C0_I2CR = 0x00;
-		MCF_I2C0_I2CR = 0xA0;
-		dummy = MCF_I2C0_I2DR; // fake read...
-		MCF_I2C0_I2SR = 0x00;
-		MCF_I2C0_I2CR = 0x00;
-		MCF_I2C0_I2CR = 0x80;
-	}
+/*
+ * Spins until the I2C bus becomes idle
+ */
+void i2c_acquire_bus() {
+        // Loop until I2C bus busy (IBB) becomes 0
+        while(MCF_I2C1_I2SR & MCF_I2C_I2SR_IBB) {
+        }
 }
 
-// acquire the i2c bus
-void i2c_acquire_bus()
-{
-	while ((MCF_I2C0_I2SR & 0x20) > 0) {} // Busy-wait until bus is free.
+/*
+ * Resets the board to slave-receiver mode, disables interrupts (use polling instead, ACK recv'd bytes, and enables I2C module
+ */
+void i2c_reset() {
+        MCF_I2C1_I2CR |= MCF_I2C_I2CR_IEN; // Enable i2c module
+        MCF_I2C1_I2CR &= ~(MCF_I2C_I2CR_IIEN); // Disable interrupts, we use polling instead
+        MCF_I2C1_I2CR &= ~(MCF_I2C_I2CR_MSTA); // Make board a slave
+        MCF_I2C1_I2CR &= ~(MCF_I2C_I2CR_MTX); // Make board a receiver
+        MCF_I2C1_I2CR &= ~(MCF_I2C_I2CR_TXAK); // Automatically ACK recv'd bytes
+        MCF_I2C1_I2CR &= ~(MCF_I2C_I2CR_RSTA); // Don't generate repeated start bits
 }
 
-// check if the message is complete
-int i2c_tx_complete()
-{
-	return getBit(MCF_I2C0_I2SR, 1);
+/*
+ * Reads count bytes of data from the slave (addr)
+ * @param addr Address of the slave to read from
+ * @param size Number of bytes to read from the slave
+ * @param data Array of bytes to transmit
+ * @param delay_us Busy waits for delay_us microseconds following each transferred byte
+ */
+void i2c_rx(uint8 addr, int size, uint8 *data, int delay_us) {
+        i2c_acquire_bus(); // Wait for bus to become idle
+        i2c_tx_addr(addr, I2C_READ, delay_us); // Send start bit, slave address, and read bit
+
+        MCF_I2C1_I2CR &= ~(MCF_I2C_I2CR_MTX); // Become a receiver
+        MCF_I2C1_I2CR &= ~(MCF_I2C_I2CR_TXAK); // Configure to ACK each recv'd data byte
+        
+        // Read a dummy byte in order to complete the mode switch
+        uint8 dummy = i2c_rx_byte(delay_us);
+        
+        // Master-receivers must generate clock pulses on SCL to recv 8 data bytes from slave
+        // Read and ACK up until the last byte (size-2)
+        for(int i = 0; i <= (size-2); i++)
+                data[i] = i2c_rx_byte(delay_us);
+        
+        // NACK to stop transmission and read the last byte
+        MCF_I2C1_I2CR |= MCF_I2C_I2CR_TXAK;
+        data[size-1] = i2c_rx_byte(delay_us);
+        
+        // Terminate communication
+        i2c_rxtx_end();
 }
 
-// receive a byte from the i2c
-uint8 i2c_receive_byte(int delay)
-{
-	uint8 byte = MCF_I2C0_I2DR;
-	
-	while(!i2c_tx_complete()) {}
-	
-	MCF_I2C0_I2SR &= ~MCF_I2C_I2SR_IIF;
-	
-	// call a DMA timer delay
-	dtim0_busy_delay_us(delay);
-	
-	return byte;
+/*
+ * Receives a data byte from the slave-transmitter and returns it
+ * @param delay_us Delay in microseconds following the read
+ * @return Byte read from the line
+ */
+uint8 i2c_rx_byte(int delay_us) {
+        uint8 ret = MCF_I2C1_I2DR; // Read, which generates SCL for the slave to transmit
+        
+        // Wait for transfer to finish
+        while(!i2c_tx_complete()) {
+        }
+        MCF_I2C1_I2SR &= ~(MCF_I2C_I2SR_IIF); // Clear interrupt request flag
+        
+        // Delay for delay_us following the transfer
+        dtim0_delay_us(delay_us);
+        return ret;
 }
 
-// called on end receive or end send in the i2c
-void i2c_rxtx_end()
-{
-	MCF_I2C0_I2CR &= ~MCF_I2C_I2CR_MSTA;
-	i2c_reset();
+/*
+ * Ends communication with the slave by transmitting a stop bit and switching to slave-receiver mode
+ */
+void i2c_rxtx_end() {
+        MCF_I2C1_I2CR &= ~(MCF_I2C_I2CR_MSTA); // Make board a slave
+        i2c_reset();
 }
 
-// send a byte through the i2c module
-void i2c_tx_byte(uint8 byte, int delay)
-{
-	int_inhibit_all();
-	MCF_I2C0_I2DR = byte;
-	while(!i2c_tx_complete()) { }
-	MCF_I2C0_I2SR &= ~MCF_I2C_I2SR_IIF;
-	int_uninhibit_all();
-	
-	// call a DMA timer delay
-	dtim0_busy_delay_us(delay);
+/*
+ * Transmit byte array to slave (addr)
+ * 
+ * @param addr Address of the slave
+ * @param size Number of bytes in data to transmit
+ * @param data Array of bytes
+ * @param delay_us Microseconds to delay between each send
+ */
+void i2c_tx(uint8 addr, int size, uint8 *data, int delay_us) {
+        i2c_acquire_bus(); // Waits for bus to become idle
+        i2c_tx_addr(addr, I2C_WRITE, delay_us); // Transmit start bit, slave address, and write bit
+        
+        // Send each byte in data
+        for(int i = 0; i < size; i++)
+                i2c_tx_byte(data[i], delay_us);
+        
+        // Terminate communication with slave
+        i2c_rxtx_end();
 }
 
-// send an address through the i2c module
-void i2c_tx_addr(int addr, int rw, int delay)
-{
-	uint8 tmp = 0;
-	MCF_I2C0_I2CR |= MCF_I2C_I2CR_MTX;
-	MCF_I2C0_I2CR |= MCF_I2C_I2CR_MSTA;
-	
-	tmp |= addr << 1;
-	tmp |= rw;
-	i2c_tx_byte(tmp, delay);
+/*
+ * Starts a transmission with the slave by putting the board into master-transmitter mode,
+ * sending the slave address and read/write bit.
+ * The I2C bus should be idle (i2c_acquire_bus()) before calling this function
+ * 
+ * @param addr Address of slave
+ * @param rw 0x01 for read, 0x00 for write
+ * @param delay_us Microseconds to delay between each send
+ */
+void i2c_tx_addr(uint8 addr, uint8 rw, int delay_us) {
+        MCF_I2C1_I2CR |= MCF_I2C_I2CR_MTX; // Make board a transmitter
+        MCF_I2C1_I2CR |= MCF_I2C_I2CR_MSTA; // Make board a master (which sends the start bit)
+        
+        // Compound first 7 address bits followed by the rw bit, then send
+        uint8 hello = 0;
+        hello |= addr << 1;
+        hello |= rw << 0;
+        i2c_tx_byte(hello, delay_us);
 }
 
-// send a command through the i2c with the address and data
-void i2c_tx(int addr, int count, int data[], int delay)
-{
-	int i;
-	i2c_acquire_bus();
-	i2c_tx_addr(addr, 0x00, delay);
-	
-	for(i=0; i < count; i++)
-	{
-		i2c_tx_byte((unsigned char)data[i], delay);
-	}
-	i2c_rxtx_end();
+/*
+ * Send a single byte of data to the slave
+ * 
+ * @param data Byte to send
+ * @param delay_us Microseconds to delay after the send
+ */
+void i2c_tx_byte(uint8 data, int delay_us) {
+        //asm_set_ipl(7); // Mask all interrupt levels !!! necessary?
+        
+        // Write data
+        MCF_I2C1_I2DR = data;
+        
+        // Wait for data to finish transmitting
+        while(!i2c_tx_complete()) {
+        }
+        MCF_I2C1_I2SR &= ~(MCF_I2C_I2SR_IIF); // Clear interrupt request flag
+        
+        //asm_set_ipl(0); // Unmask all interrupt levels !!! necessary?
+        
+        // Delay for delay_us following the transfer
+        dtim0_delay_us(delay_us);
 }
 
-// receive from the i2c module 
-void i2c_rx(int addr, int count, int data[], int delay)
-{
-	int i;
-	// acquire bus 
-	i2c_acquire_bus();
-	i2c_tx_addr(addr, 0x01, delay);
-	
-	MCF_I2C0_I2CR &= ~MCF_I2C_I2CR_MTX;
-	MCF_I2C0_I2CR &= ~MCF_I2C_I2CR_TXAK;
-	
-	// receive the data
-	i2c_receive_byte(delay);
-	
-	// store the data
-	for(i=0; i <count-1; i++)
-	{
-		data[i] = i2c_receive_byte(delay);
-	}
-	
-	MCF_I2C0_I2CR |= MCF_I2C_I2CR_TXAK;
-	data[count-1] = i2c_receive_byte(delay);
-	i2c_rxtx_end();
+/*
+ * Checks interrupt request flag. If its set the transmit completed, otherwise, its still in progress
+ * 
+ * @return True if the transmit has completed, false if otherwise
+ */
+int i2c_tx_complete() {
+        return (MCF_I2C1_I2SR & MCF_I2C_I2SR_IIF);
 }

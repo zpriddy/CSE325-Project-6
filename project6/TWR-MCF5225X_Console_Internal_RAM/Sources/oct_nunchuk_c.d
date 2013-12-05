@@ -32,8 +32,11 @@ Sources/oct_nunchuk_c.obj: C:\Users\zpriddy\Documents\GitHub\CSE325-Project-6\pr
 	C:\Freescale\CW\ MCU\ v10.2\MCU\ColdFire_Support\(headers)\MCF52259\MCF52259_CFM.h \
 	C:\Freescale\CW\ MCU\ v10.2\MCU\ColdFire_Support\(headers)\MCF52259\MCF52259_RNGA.h \
 	C:\Users\zpriddy\Documents\GitHub\CSE325-Project-6\project6\Project_Headers\TWR-MCF5225X_sysinit.h \
+	C:\Users\zpriddy\Documents\GitHub\CSE325-Project-6\project6\Project_Headers\exceptions.h \
 	C:\Users\zpriddy\Documents\GitHub\CSE325-Project-6\project6\Project_Headers\dtim.h \
 	C:\Users\zpriddy\Documents\GitHub\CSE325-Project-6\project6\Project_Headers\oct_nunchuk.h \
+	C:\Users\zpriddy\Documents\GitHub\CSE325-Project-6\project6\Project_Headers\pit.h \
+	C:\Users\zpriddy\Documents\GitHub\CSE325-Project-6\project6\Project_Headers\int.h \
 	C:\Users\zpriddy\Documents\GitHub\CSE325-Project-6\project6\Project_Headers\i2c.h \
 	C:\Users\zpriddy\Documents\GitHub\CSE325-Project-6\project6\Project_Headers\utils.h \
 	C:\Freescale\CW\ MCU\ v10.2\MCU\ColdFire_Support\ewl\EWL_C\include\stdio.h \

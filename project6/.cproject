@@ -60,8 +60,9 @@
 								<option id="com.freescale.coldfire.toolchain.compiler.base.optionCategory.processor.a6.1410230059" name="A6 Stack Frames (-a6)" superClass="com.freescale.coldfire.toolchain.compiler.base.optionCategory.processor.a6" value="true" valueType="boolean"/>
 								<option id="com.freescale.coldfire.toolchain.compiler.base.general.wchar.off.770534424" name="Enable wchar_t Support" superClass="com.freescale.coldfire.toolchain.compiler.base.general.wchar.off" value="true" valueType="boolean"/>
 								<option id="com.freescale.coldfire.toolchain.compiler.base.general.otherflags.1467942148" name="Other flags" superClass="com.freescale.coldfire.toolchain.compiler.base.general.otherflags" value="-define CONSOLE_IO_SUPPORT=1" valueType="string"/>
-								<option id="com.freescale.coldfire.toolchain.compiler.base.general.enableGCC.1794433890" superClass="com.freescale.coldfire.toolchain.compiler.base.general.enableGCC" value="true" valueType="boolean"/>
-								<option id="com.freescale.coldfire.toolchain.compiler.base.general.enableC99.596495311" superClass="com.freescale.coldfire.toolchain.compiler.base.general.enableC99" value="true" valueType="boolean"/>
+								<option id="com.freescale.coldfire.toolchain.compiler.base.general.enableGCC.1794433890" name="Enable GCC Extensions (-gccext on)" superClass="com.freescale.coldfire.toolchain.compiler.base.general.enableGCC" value="true" valueType="boolean"/>
+								<option id="com.freescale.coldfire.toolchain.compiler.base.general.enableC99.596495311" name="Enable C99 Extensions (-lang c99)" superClass="com.freescale.coldfire.toolchain.compiler.base.general.enableC99" value="true" valueType="boolean"/>
+								<option id="com.freescale.coldfire.toolchain.compiler.base.general.cpp.exceptions.1329650226" superClass="com.freescale.coldfire.toolchain.compiler.base.general.cpp.exceptions" value="true" valueType="boolean"/>
 								<inputType id="com.freescale.coldfire.toolchain.compiler.base.input.1741753003" name="C Source File" superClass="com.freescale.coldfire.toolchain.compiler.base.input"/>
 								<inputType id="com.freescale.coldfire.toolchain.compiler.base.input.c++.2040845159" name="C++ Source File" superClass="com.freescale.coldfire.toolchain.compiler.base.input.c++"/>
 							</tool>

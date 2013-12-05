@@ -15,8 +15,9 @@
 #ifndef DTIM_H_
 #define DTIM_H_
 
-void dtim0_busy_delay_ms(int p_msecs);
-void dtim0_busy_delay_us(int p_usecs);
+void dtim0_delay_us(int p_usecs);
 void dtim0_init();
+void dtim3_delay_us(int p_usecs);
+void dtim3_init();
 
 #endif // DTIM_H_

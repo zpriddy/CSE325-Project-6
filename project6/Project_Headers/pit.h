@@ -20,6 +20,9 @@
 
 #include "int.h"
 
+extern uint32 __VECTOR_RAM[];
+extern uint32 g_program_mode;
+
 typedef enum
 {
 	pit_timer_0 = 0,
@@ -36,12 +39,13 @@ void pit0_init(int_isr p_callback, int p_scaler);
 void pit0_enable();
 void pit0_disable();
 void pit0_clr_flg();
-void pit1_init(int_isr p_callback, int p_scaler);
-void pit1_enable();
-void pit1_disable();
-void pit1_clr_flg();
+
+void pit1_init();
+void pit1_stop();
+__declspec(interrupt) void pit1_isr();
+
 
 
 __declspec(interrupt) void pit_0_handler(void);
-__declspec(interrupt) void pit_1_handler(void);
+
 #endif /* PIT_H_ */
