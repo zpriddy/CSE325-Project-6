@@ -19,7 +19,8 @@
 // Tempe, AZ 85287-8809
 // 
 //********************************************************************************************************
-#include "common.h"
+#include "support_common.h"
+#include "gpio.h"
 
 const uint32 IPSBAR = 0x40000000;
 const uint32 GPIO_BASE = IPSBAR + 0x00100000;

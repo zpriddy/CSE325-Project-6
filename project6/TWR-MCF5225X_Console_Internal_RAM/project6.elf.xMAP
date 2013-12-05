@@ -1,0 +1,142 @@
+
+
+#>00000400          ___heap_size (linker command file)
+#>00000800          ___stack_size (linker command file)
+#>40000000          ___IPSBAR (linker command file)
+#>20000000          ___RAMBAR (linker command file)
+#>00010000          ___RAMBAR_SIZE (linker command file)
+#>00000000          ___FLASHBAR (linker command file)
+#>00080000          ___FLASHBAR_SIZE (linker command file)
+#>2000FFFC          ___SP_AFTER_RESET (linker command file)
+
+# .userram
+
+# .code
+
+# .vectorram
+
+# .vectors
+  20000500 00000400 .vectortable _vect	(exceptions_c.obj)
+
+# .text
+  20000900 00000008 .text   __initialize_system	(startcf_c.obj)
+  20000908 0000006C .text   __copy_rom_section	(startcf_c.obj)
+  20000974 0000005C .text   __copy_rom_sections_to_ram	(startcf_c.obj)
+  200009D0 0000022A .text   clear_mem	(startcf_c.obj)
+  20000BFA 00000096 .text   _startup	(startcf_c.obj)
+  20000C90 00000024 .text   getBit	(utils_c.obj)
+  20000CB4 00000104 .text   pit0_init	(pit_c.obj)
+  20000DB8 00000024 .text   pit0_enable	(pit_c.obj)
+  20000DDC 00000080 .text   pit_0_handler	(pit_c.obj)
+  20000E5C 00000020 .text   nunchuk_init	(oct_nunchuk_c.obj)
+  20000E7C 0000006E .text   nunchuk_xmit_cmd	(oct_nunchuk_c.obj)
+  20000EEA 000000BA .text   nunchuk_read	(oct_nunchuk_c.obj)
+  20000FA4 00000010 .text   console_update	(main_c.obj)
+  20000FB4 0000002A .text   hw_init	(main_c.obj)
+  20000FDE 0000002A .text   run	(main_c.obj)
+  20001008 00000012 .text   main	(main_c.obj)
+  2000101C 000000F8 .text   @DummyFn1	(int_s.obj)
+  2000101C 00000000 .text   int_config	(int_s.obj)
+  2000101C 000000F8 .text   .text	(int_s.obj)
+  2000105E 00000000 .text   int_inhibit_all	(int_s.obj)
+  2000107A 00000000 .text   int_mask_src	(int_s.obj)
+  200010BC 00000000 .text   int_unmask_src	(int_s.obj)
+  20001102 00000000 .text   int_uninhibit_all	(int_s.obj)
+  20001114 000000A8 .text   i2c_reset	(i2c_c.obj)
+  200011BC 000000C6 .text   i2c_init	(i2c_c.obj)
+  20001282 00000060 .text   i2c_receive_byte	(i2c_c.obj)
+  200012E2 00000068 .text   i2c_tx_byte	(i2c_c.obj)
+  2000134A 0000007C .text   i2c_tx_addr	(i2c_c.obj)
+  200013C6 00000086 .text   i2c_tx	(i2c_c.obj)
+  2000144C 0000010C .text   i2c_rx	(i2c_c.obj)
+  20001558 00000004 .text   TrapHandler_printf	(exceptions_c.obj)
+  2000155C 00000200 .text   mcf_exception_handler	(exceptions_c.obj)
+  2000175C 00000020 .text   asm_exception_handler	(exceptions_c.obj)
+  2000177C 00000008 .text   mcf5xxx_wr_vbr	(exceptions_c.obj)
+  20001784 00000062 .text   initialize_exceptions	(exceptions_c.obj)
+  200017E6 00000068 .text   dtim0_busy_delay_us	(dtim_c.obj)
+  2000184E 00000086 .text   dtim0_init	(dtim_c.obj)
+  200018D4 00000016 .text   TRKAccessFile	(console_io_cf_c.obj)
+  200018EA 0000008A .text   __access_file	(console_io_cf_c.obj)
+  20001974 0000002C .text   __write_console	(console_io_cf_c.obj)
+  200019A0 00000020 .text   pll_init	(TWR-MCF5225X_sysinit_c.obj)
+  200019C0 00000022 .text   scm_init	(TWR-MCF5225X_sysinit_c.obj)
+  200019E2 0000003E .text   __initialize_hardware	(TWR-MCF5225X_sysinit_c.obj)
+  20001A20 00000020 .text   memchr	(libc.a mem.o          )
+  20001A40 00000020 .text   __ConsoleWrite	(libc.a printf.o       )
+  20001A60 00000022 .text   printf_console	(libc.a printf.o       )
+  20001A84 00000010 .text   strlen	(libc.a string.o       )
+  20001A94 00000028 .text   strchr	(libc.a string.o       )
+  20001ABC 0000001E .text   isdigit	(libc.a strtold.o      )
+  20001ADA 000002A8 .text   parse_format	(libc.a printformat_.o )
+  20001D82 0000002A .text   set_base	(libc.a printformat_.o )
+  20001DAC 000000D6 .text   justify_conversion	(libc.a printformat_.o )
+  20001E82 00000114 .text   long2str	(libc.a printformat_.o )
+  20001F96 000003F0 .text   __pformatter	(libc.a printformat_.o )
+  20002386 0000001C .text   __call_static_initializers	(librt.a cf_staticinitia)
+  200023A2 00000012 .text   __clear	(librt.a cf_runtime.o   )
+  200023B4 0000000E .rodata @31	(oct_nunchuk_c.obj)
+  200023C2 00000003 .rodata @62	(oct_nunchuk_c.obj)
+  200023C8 00000018 .rodata @82	(oct_nunchuk_c.obj)
+  200023E0 0000000D .rodata @77	(main_c.obj)
+  200023ED 00000081 .rodata _ctypes_	(libc.a ctype.o        )
+  2000246E 00000001 .rodata @609	(libc.a printformat_.o )
+#>20002470          ___ROM_AT (linker command file)
+#>20002470          ___DATA_ROM (linker command file)
+
+# .data
+#>20005000          ___DATA_RAM (linker command file)
+#>20005000          __exception_table_start__ (linker command file)
+# Exception index
+  20005000 00000000         Exception Table Index	()
+#>20005000          __exception_table_end__ (linker command file)
+#>20005000          ___sinit__ (linker command file)
+# Linker generated symbols
+  20005000 00000004         static initializer	(linker generated)
+#>20005004          __START_DATA (linker command file)
+#>20005004          __END_DATA (linker command file)
+#>20005004          __START_SDATA (linker command file)
+#>20005004          __END_SDATA (linker command file)
+#>20005004          ___DATA_END (linker command file)
+#>20005004          __SDA_BASE (linker command file)
+
+# .bss
+#>20005004          ___BSS_START (linker command file)
+#>20005004          __START_SBSS (linker command file)
+#>20005004          __END_SBSS (linker command file)
+#>20005004          __START_BSS (linker command file)
+  20005004 00000004 .bss    g_timer0_callback	(pit_c.obj)
+  20005008 00000004 .bss    g_console_update	(main_c.obj)
+#>2000500C          __END_BSS (linker command file)
+#>2000500C          ___BSS_END (linker command file)
+
+# .custom
+#>2000500C          ___HEAP_START (linker command file)
+#>2000500C          ___heap_addr (linker command file)
+#>2000540C          ___HEAP_END (linker command file)
+#>2000540C          ___SP_END (linker command file)
+#>20005C0C          ___SP_INIT (linker command file)
+#>20000000          ___VECTOR_RAM (linker command file)
+#>20005C0C          __SP_INIT (linker command file)
+#>2000540C          ___mem_limit (linker command file)
+#>00000010          ___stack_safety (linker command file)
+#>20002474          _romp_at (linker command file)
+
+# .romp
+#>20002474          __S_romp (linker command file)
+
+
+# Memory map:
+  v_addr   p_addr   size     name
+  20000000 20000000 00000000 .vectorram vectorram
+  20000500 20000500 00000000 .code      code
+  20000500 20000500 00000400 .vectors   code
+  20000900 20000900 00001B70 .text      code
+  20005000 20005000 00000000 .userram   userram
+  20005000 20002470 00000004 .data      userram
+  20005004 20005004 00000008 .bss       userram
+  2000500C 2000500C 00000000 .custom    userram
+  2000500C 20002474 00000018 .romp      userram
+
+# Link start time: Wed Dec 04 18:45:04 2013
+# Link end time: Wed Dec 04 18:45:04 2013

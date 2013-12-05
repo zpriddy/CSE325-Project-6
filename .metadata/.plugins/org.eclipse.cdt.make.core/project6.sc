@@ -102,4 +102,14 @@
 <definedSymbol symbol="__interrupt="/>
 </collector>
 </instance>
+<instance id="com.freescale.coldfire.toolchain.configuration.736845985;com.freescale.coldfire.toolchain.configuration.736845985.Sources/cfm.c;com.freescale.coldfire.toolchain.compiler.debug.1698929057.361941588;com.freescale.coldfire.toolchain.compiler.base.input.c++.1855520494">
+<collector id="org.eclipse.cdt.make.core.PerProjectSICollector">
+<definedSymbol symbol="near="/>
+<definedSymbol symbol="far="/>
+<definedSymbol symbol="__near="/>
+<definedSymbol symbol="__far="/>
+<definedSymbol symbol="interrupt="/>
+<definedSymbol symbol="__interrupt="/>
+</collector>
+</instance>
 </scannerInfo>

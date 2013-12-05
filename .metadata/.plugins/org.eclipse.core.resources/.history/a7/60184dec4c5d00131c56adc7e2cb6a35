@@ -1,0 +1,102 @@
+//*******************************************************************************************************
+// main.c
+//
+// Date: 2013-11-14 10:49:08
+//
+// DESCRIPTION:
+//
+// AUTHORS:
+//  Abdulla Al Braiki (ayalbrai@asu.edu)
+//  Zachary Priddy (zpriddy@asu.edu)
+//
+// Computer Science & Engineering
+// Arizona State University
+// Tempe, AZ 85287-8809
+// 
+//*******************************************************************************************************
+#include <stdio.h>
+
+#include "support_common.h"
+#include "dtim.h"
+#include "pit.h"
+#include "dtim.h"
+#include "i2c.h"
+#include "oct_nunchuk.h"
+#include "utils.h"
+
+char DATA[1024];
+int count = 0;
+int xfer_end = 0;
+int LENGTH = 0;
+
+
+
+
+static void uart_callback()
+{
+
+	
+}
+
+static void pb1_callback()
+{
+	
+
+	
+}
+
+static void pb2_callback()
+{
+
+	
+}
+
+static void pit0_callback()
+{
+
+	
+}
+
+static void hw_init()
+{
+	int_inhibit_all();
+	dtim0_init();
+	//pit0_init(pit0_callback, 9);
+	
+	
+	
+	int_uninhibit_all();
+	
+	
+	
+	//pit0_enable();
+	//pit1_enable();
+	
+	
+
+}
+
+
+	
+	
+
+
+
+
+
+static void run()
+{
+	while(1)
+	{
+		printf("TEST OUTPUT");
+		dtim0_busy_delay_ms(100);
+		
+	}
+}
+
+
+__declspec(noreturn) int main()
+{
+	hw_init();
+	run();
+}

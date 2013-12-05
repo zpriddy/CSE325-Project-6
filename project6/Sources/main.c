@@ -1,24 +1,114 @@
-/*
- * main implementation: use this sample to create your own application
- *
- */
-
-
-#include "support_common.h" /* include peripheral declarations and more */
-#if (CONSOLE_IO_SUPPORT || ENABLE_UART_SUPPORT)
-/* Standard IO is only possible if Console or UART support is enabled. */
+//*******************************************************************************************************
+// main.c
+//
+// Date: 2013-11-14 10:49:08
+//
+// DESCRIPTION:
+//
+// AUTHORS:
+//  Abdulla Al Braiki (ayalbrai@asu.edu)
+//  Zachary Priddy (zpriddy@asu.edu)
+//
+// Computer Science & Engineering
+// Arizona State University
+// Tempe, AZ 85287-8809
+// 
+//*******************************************************************************************************
 #include <stdio.h>
-#endif
+
+#include "support_common.h"
+#include "dtim.h"
+#include "pit.h"
+#include "dtim.h"
+#include "i2c.h"
+#include "oct_nunchuk.h"
+#include "utils.h"
+
+static volatile int g_console_update;
 
 
-int main(void)
+
+static void uart_callback()
 {
-	int counter = 0;
 
-#if (CONSOLE_IO_SUPPORT || ENABLE_UART_SUPPORT)
-	printf("Hello World in C++ from MCF52259 derivative on TWR-MCF5225X board\n\r");
-#endif
-	for(;;) {	   
-	   	counter++;
+	
+}
+
+static void pb1_callback()
+{
+	
+
+	
+}
+
+static void pb2_callback()
+{
+
+	
+}
+
+static void pit0_callback()
+{
+	g_console_update = 1;
+	 
+}
+
+static void console_update()
+{
+	g_console_update = 1;
+}
+
+
+
+
+static void hw_init()
+{
+	int_inhibit_all();
+	//dtim0_init();
+	pit0_init(console_update, 9);
+	nunchuk_init();
+	
+	
+	
+	int_uninhibit_all();
+	g_console_update = 1;
+	
+	
+	
+	pit0_enable();
+	//pit1_enable();
+	
+	
+
+}
+
+
+
+	
+	
+
+
+
+
+
+static void run()
+{
+	while(1)
+	{
+		nunchuk_read();
+		if(g_console_update == 1)
+		{
+			printf("TEST OUTPUT\n");
+			g_console_update = 0;
+		}
+		
+		
 	}
+}
+
+
+__declspec(noreturn) int main()
+{
+	hw_init();
+	run();
 }

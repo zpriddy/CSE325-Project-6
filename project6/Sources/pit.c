@@ -16,19 +16,11 @@
 //*****************************************************************************
 
 #include "gpio.h"
-#include "uc_led.h"
 #include "support_common.h"
-#include "gpt.h"
 #include "int.h"
 #include "gpio.h"
-#include "pwm.h"
 #include "pit.h"
-#include "song.h"
-#include "note.h"
-#include "uart.h"
-#include "oct_spkr.h"
-#include "uc_pot.h"
-#include "adc.h"
+
 
 
 static int_isr g_timer0_callback = 0;
